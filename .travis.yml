@@ -1,3 +1,5 @@
 language: generic
 script:
   - packer validate aws-starter.json
+install:
+  - packer build aws-starter.json

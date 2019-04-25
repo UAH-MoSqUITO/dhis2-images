@@ -1,1 +1,2 @@
-
+script:
+  - packer validate aws-starter.json

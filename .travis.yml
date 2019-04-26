@@ -1,5 +1,7 @@
 dist: xenial
-language: generic
+language: python
+install:
+  - pip install -U ansible
 script:
   - packer validate aws-starter.json
   - packer build aws-starter.json

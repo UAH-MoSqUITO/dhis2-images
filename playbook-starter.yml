@@ -1,0 +1,84 @@
+---
+- hosts: default
+  become: true
+  tasks:
+    - set_fact:
+        dhis:
+          user: dhis
+          db:
+            name: dhis2
+            user: dhis
+            pass: "{{ lookup('password', 'credentials/dhis.db.pass') }}"
+            encryptpass: "{{ lookup('password', 'credentials/dhis.db.encryptpass') }}"
+    - apt:
+        update_cache: yes
+        cache_valid_time: 86400
+    - user:
+        state: present
+        name: "{{ dhis.user }}"
+        create_home: yes
+    - file:
+        state: directory
+        path: "/home/{{ dhis.user }}/config"
+        owner: "{{ dhis.user }}"
+        group: "{{ dhis.user }}"
+    - package:
+        state: present
+        name:
+          - postgresql-10
+          - postgresql-contrib-10
+          - postgresql-10-postgis-2.4
+          - python-psycopg2
+          - openjdk-8-jdk
+          - tomcat8-user
+    - block:
+        - postgresql_user:
+            state: present
+            name: "{{ dhis.db.user }}"
+            role_attr_flags: NOCREATEDB,NOCREATEROLE,LOGIN,NOSUPERUSER
+            encrypted: yes
+            password: "{{ dhis.db.pass }}"
+        - postgresql_db:
+            state: present
+            name: "{{ dhis.db.name }}"
+            owner: "{{ dhis.db.user }}"
+        - postgresql_ext:
+            state: present
+            db: "{{ dhis.db.name }}"
+            name: postgis
+      become_user: postgres
+    - template:
+        owner: "{{ dhis.user }}"
+        group: "{{ dhis.user }}"
+        mode: 0600
+        dest: "/home/{{ dhis.user }}/config/dhis.conf"
+        src: dhis.conf.j2
+    - command:
+      args:
+        creates: "/home/{{ dhis.user }}/tomcat-dhis/conf/server.xml"
+        argv:
+          - tomcat8-instance-create
+          - "/home/{{ dhis.user }}/tomcat-dhis"
+    - file:
+        state: directory
+        recurse: yes
+        path: "/home/{{ dhis.user }}/tomcat-dhis"
+        owner: "{{ dhis.user }}"
+        group: "{{ dhis.user }}"
+    - blockinfile:
+        state: present
+        path: "/home/{{ dhis.user }}/tomcat-dhis/bin/setenv.sh"
+        insertafter: EOF
+        block: |
+          export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64/'
+          export DHIS2_HOME='/home/{{ dhis.user }}/config'
+    - blockinfile:
+        state: present
+        path: "/home/{{ dhis.user }}/tomcat-dhis/bin/startup.sh"
+        insertafter: "^#!/"
+        block: |
+          set -e
+          if [ "$(id -u)" -eq "0" ]; then
+            echo "This script must NOT be run as root" 1>&2
+            exit 1
+          fi

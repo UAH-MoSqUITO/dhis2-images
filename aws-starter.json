@@ -21,6 +21,10 @@
       "instance_type": "t2.micro",
       "ssh_username": "ubuntu",
       "ami_name": "packer-example {{timestamp}}"
+    }],
+    "provisioners":[{
+      "type": "ansible",
+      "playbook_file": "./playbook-starter.yml"
     }]
   }
   

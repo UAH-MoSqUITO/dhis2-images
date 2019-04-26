@@ -1,0 +1,20 @@
+---
+- hosts: default
+  vars:
+    dhis2versionmajor: "2.31"
+    dhis2versionfull: "2.31.1"
+    dhis2wardisturl: "https://releases.dhis2.org/{{ dhis2versionmajor }}/{{ dhis2versionfull }}/dhis.war"
+    #dhis2wardistcksum: sha256:???
+  tasks:
+    - get_url:
+        dest: /home/dhis/tomcat-dhis/webapps/ROOT.war
+        url: "{{ dhis2wardisturl }}"
+        owner: dhis
+        group: dhis
+        #checksum:
+
+# TODO:
+# - register tomcat as service
+# - import Sierra Leone data
+# - configure Google service account
+# - ???

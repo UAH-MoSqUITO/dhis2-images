@@ -6,3 +6,7 @@ packer_cache/
 
 # Avoid accidentally adding downloaded credentials
 credentials.csv
+
+/.vagrant/
+*.retry
+/credentials/

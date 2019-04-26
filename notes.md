@@ -7,8 +7,5 @@
 
 ## AWS setup
 
-* Add IAM user
-  * Programmatic access (access key ID and secret access key)
-  * Permissions: TBD
-
-* Configure [AWS CLI](https://aws.amazon.com/cli/) to use new IAM user's credentials
+* Add [policy](`aws-policy.json`)
+* Add IAM role (or group or user), and attach policy

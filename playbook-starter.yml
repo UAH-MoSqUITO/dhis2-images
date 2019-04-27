@@ -1,6 +1,8 @@
 ---
 - hosts: default
   become: true
+  vars:
+    pypkgfam: "python{{ ansible_python.version.major|replace('2','') }}"
   tasks:
     - set_fact:
         dhis:
@@ -28,7 +30,7 @@
           - postgresql-10
           - postgresql-contrib-10
           - postgresql-10-postgis-2.4
-          - python-psycopg2
+          - "{{ pypkgfam }}-psycopg2"
           - openjdk-8-jdk
           - tomcat8-user
     - block:

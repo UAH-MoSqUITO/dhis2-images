@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: starter
   become: true
   vars:
     pypkgfam: "python{{ ansible_python.version.major|replace('2','') }}"

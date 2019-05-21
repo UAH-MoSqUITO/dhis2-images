@@ -1,5 +1,5 @@
 ---
-- hosts: default
+- hosts: full
   vars:
     dhis2versionmajor: "2.31"
     dhis2versionfull: "2.31.1"

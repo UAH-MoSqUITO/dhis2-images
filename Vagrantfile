@@ -5,6 +5,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "bento/ubuntu-18.04"
   [
     'starter',
+    'full',
   ].each do |name|
     config.vm.define name do |x|
       config.vm.provision "ansible_local" do |ansible|

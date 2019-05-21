@@ -3,14 +3,6 @@
 - hosts: starter
   become: true
   tasks:
-    - set_fact:
-        dhis:
-          user: dhis
-          db:
-            name: dhis2
-            user: dhis
-            pass: "{{ lookup('password', 'credentials/dhis.db.pass') }}"
-            encryptpass: "{{ lookup('password', 'credentials/dhis.db.encryptpass') }}"
     - user:
         state: present
         name: "{{ dhis.user }}"
@@ -20,22 +12,6 @@
         path: "/home/{{ dhis.user }}/config"
         owner: "{{ dhis.user }}"
         group: "{{ dhis.user }}"
-    - block:
-        - postgresql_user:
-            state: present
-            name: "{{ dhis.db.user }}"
-            role_attr_flags: NOCREATEDB,NOCREATEROLE,LOGIN,NOSUPERUSER
-            encrypted: yes
-            password: "{{ dhis.db.pass }}"
-        - postgresql_db:
-            state: present
-            name: "{{ dhis.db.name }}"
-            owner: "{{ dhis.db.user }}"
-        - postgresql_ext:
-            state: present
-            db: "{{ dhis.db.name }}"
-            name: postgis
-      become_user: postgres
     - template:
         owner: "{{ dhis.user }}"
         group: "{{ dhis.user }}"

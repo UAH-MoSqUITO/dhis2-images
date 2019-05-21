@@ -1,9 +1,16 @@
 ---
 - hosts: all
   become: true
-  vars:
-    pypkgfam: "python{{ ansible_python.version.major|replace('2','') }}"
   tasks:
+    - set_fact:
+        pypkgfam: "python{{ ansible_python.version.major|replace('2','') }}"
+        dhis:
+          user: dhis
+          db:
+            name: dhis2
+            user: dhis
+            pass: "{{ lookup('password', 'credentials/dhis.db.pass') }}"
+            encryptpass: "{{ lookup('password', 'credentials/dhis.db.encryptpass') }}"
     - apt:
         update_cache: yes
         cache_valid_time: 86400
@@ -16,3 +23,19 @@
           - "{{ pypkgfam }}-psycopg2"
           - openjdk-8-jdk
           - tomcat8-user
+    - block:
+        - postgresql_user:
+            state: present
+            name: "{{ dhis.db.user }}"
+            role_attr_flags: NOCREATEDB,NOCREATEROLE,LOGIN,NOSUPERUSER
+            encrypted: yes
+            password: "{{ dhis.db.pass }}"
+        - postgresql_db:
+            state: present
+            name: "{{ dhis.db.name }}"
+            owner: "{{ dhis.db.user }}"
+        - postgresql_ext:
+            state: present
+            db: "{{ dhis.db.name }}"
+            name: postgis
+      become_user: postgres

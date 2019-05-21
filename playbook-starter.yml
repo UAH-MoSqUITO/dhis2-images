@@ -1,8 +1,7 @@
 ---
+- import_playbook: common.yml
 - hosts: starter
   become: true
-  vars:
-    pypkgfam: "python{{ ansible_python.version.major|replace('2','') }}"
   tasks:
     - set_fact:
         dhis:
@@ -12,9 +11,6 @@
             user: dhis
             pass: "{{ lookup('password', 'credentials/dhis.db.pass') }}"
             encryptpass: "{{ lookup('password', 'credentials/dhis.db.encryptpass') }}"
-    - apt:
-        update_cache: yes
-        cache_valid_time: 86400
     - user:
         state: present
         name: "{{ dhis.user }}"
@@ -24,15 +20,6 @@
         path: "/home/{{ dhis.user }}/config"
         owner: "{{ dhis.user }}"
         group: "{{ dhis.user }}"
-    - package:
-        state: present
-        name:
-          - postgresql-10
-          - postgresql-contrib-10
-          - postgresql-10-postgis-2.4
-          - "{{ pypkgfam }}-psycopg2"
-          - openjdk-8-jdk
-          - tomcat8-user
     - block:
         - postgresql_user:
             state: present

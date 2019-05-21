@@ -1,4 +1,5 @@
 ---
+- import_playbook: common.yml
 - hosts: full
   vars:
     dhis2versionmajor: "2.31"

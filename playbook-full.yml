@@ -1,5 +1,5 @@
 ---
-- import_playbook: common.yml
+- import_playbook: common-packages.yml
 - hosts: full
   vars:
     dhis2versionmajor: "2.31"
@@ -13,6 +13,7 @@
         owner: dhis
         group: dhis
         #checksum:
+      tags: ["skip"]
 
 # TODO:
 # - register tomcat as service

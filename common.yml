@@ -1,9 +1,9 @@
 ---
+- import_playbook: common-packages.yml
 - hosts: all
   become: true
   tasks:
     - set_fact:
-        pypkgfam: "python{{ ansible_python.version.major|replace('2','') }}"
         dhis:
           user: dhis
           db:
@@ -11,18 +11,6 @@
             user: dhis
             pass: "{{ lookup('password', 'credentials/dhis.db.pass') }}"
             encryptpass: "{{ lookup('password', 'credentials/dhis.db.encryptpass') }}"
-    - apt:
-        update_cache: yes
-        cache_valid_time: 86400
-    - package:
-        state: present
-        name:
-          - postgresql-10
-          - postgresql-contrib-10
-          - postgresql-10-postgis-2.4
-          - "{{ pypkgfam }}-psycopg2"
-          - openjdk-8-jdk
-          - tomcat8-user
     - block:
         - postgresql_user:
             state: present

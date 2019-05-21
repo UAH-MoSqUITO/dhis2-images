@@ -8,7 +8,7 @@ Vagrant.configure("2") do |config|
     'full',
   ].each do |name|
     config.vm.define name do |x|
-      config.vm.provision "ansible_local" do |ansible|
+      x.vm.provision "ansible_local" do |ansible|
         ansible.compatibility_mode = "2.0"
         ansible.become = false
         ansible.playbook = "playbook-#{name}.yml"

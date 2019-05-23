@@ -5,6 +5,13 @@
   tasks:
     - set_fact:
         pypkgfam: "python{{ ansible_python.version.major|replace('2','') }}"
+    - name: Prevent APT from starting services when installing packages
+      copy:
+        dest: /usr/sbin/policy-rc.d
+        content: |
+          #!/bin/sh
+          exit 101
+        mode: 0755
     - apt:
         update_cache: yes
         cache_valid_time: 86400

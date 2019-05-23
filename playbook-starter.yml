@@ -3,6 +3,10 @@
 - hosts: starter
   become: true
   tasks:
+    - package:
+        state: present
+        name:
+          - tomcat8-user
     - user:
         state: present
         name: "{{ dhis.user }}"

@@ -31,6 +31,12 @@
   ],
   "provisioners": [
     {
+      "type": "shell",
+      "inline": [
+        "while [ ! -f /var/lib/cloud/instance/boot-finished ]; do echo 'Waiting for cloud-init...'; sleep 1; done"
+      ]
+    },
+    {
       "type": "ansible",
       "playbook_file": "./playbook-full.yml",
       "extra_arguments": [

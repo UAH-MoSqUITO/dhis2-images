@@ -29,3 +29,21 @@
 # - import Sierra Leone data
 # - configure Google service account
 # - ???
+
+# Start with Ubuntu minimal (ubuntu-minimal/images/hvm-ssd/ubuntu-bionic-18.04-amd64-minimal-20190514)
+# (Maybe?) Add "don't start services" /usr/sbin/policy-rc.d (exit 101)
+# apt get update && apt get upgrade
+# Install packages
+# Add haproxy configuration file, reverse proxy to tomcat
+# Add dhis2 war file
+# Add sample data file
+# Add dhis2 config file
+# Add database role
+# Add database
+# Import sample data
+# Add firstboot script
+# - Regenerate snakeoil cert
+# - Generate random database password
+# - Generate random encryption password
+# - Change database password
+# - Update dhis2 config file

@@ -1,6 +1,6 @@
 ---
 - import_playbook: common-packages.yml
-- hosts: full
+- hosts: all
   become: yes
   tasks:
     - package:
@@ -9,7 +9,7 @@
           - tomcat8
           - haproxy
           - ssl-cert
-- hosts: full
+- hosts: all
   vars:
     dhis2versionmajor: "2.31"
     dhis2versionfull: "2.31.1"

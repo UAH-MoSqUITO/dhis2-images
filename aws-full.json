@@ -40,6 +40,7 @@
       "type": "ansible",
       "playbook_file": "./playbook-full.yml",
       "extra_arguments": [
+        "--skip-tags=skip",
         "--extra-vars",
         "ansible_python_interpreter=/usr/bin/python3"
       ]

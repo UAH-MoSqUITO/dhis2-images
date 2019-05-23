@@ -1,11 +1,12 @@
 {
-    "variables": {
-      "aws_auth_access_key": "",
-      "aws_auth_secret_key": "",
-      "aws_image_region": "us-east-2",
-      "ami_regions": "us-east-1,us-west-2"
-    },
-    "builders": [{
+  "variables": {
+    "aws_auth_access_key": "",
+    "aws_auth_secret_key": "",
+    "aws_image_region": "us-east-2",
+    "ami_regions": "us-east-1,us-west-2"
+  },
+  "builders": [
+    {
       "type": "amazon-ebs",
       "access_key": "{{user `aws_auth_access_key`}}",
       "secret_key": "{{user `aws_auth_secret_key`}}",
@@ -16,24 +17,28 @@
           "name": "ubuntu-minimal/images/*ubuntu-*-18.04-amd64-*",
           "root-device-type": "ebs"
         },
-        "owners": ["099720109477"],
+        "owners": [
+          "099720109477"
+        ],
         "most_recent": true
       },
       "instance_type": "t2.micro",
       "ssh_username": "ubuntu",
-      "ami_name": "dhis2-starter {{timestamp}}",
+      "ami_name": "dhis2-full {{timestamp}}",
       "ami_regions": "{{ user `ami_regions` }}",
       "tags": {
         "Base_AMI_Name": "{{ .SourceAMIName }}"
-      }    
-    }],
-    "provisioners":[{
+      }
+    }
+  ],
+  "provisioners": [
+    {
       "type": "ansible",
-      "playbook_file": "./playbook-starter.yml",
+      "playbook_file": "./playbook-full.yml",
       "extra_arguments": [
         "--extra-vars",
         "ansible_python_interpreter=/usr/bin/python3"
       ]
-    }]
-  }
-  
+    }
+  ]
+}

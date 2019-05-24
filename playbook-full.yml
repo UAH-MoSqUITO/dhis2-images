@@ -49,8 +49,8 @@
 
 - hosts: all
   vars:
-    dhis2versionmajor: "2.31"
-    dhis2versionfull: "2.31.1"
+    dhis2versionfull: "{{ dhis2_version|default('2.32.0')}}"
+    dhis2versionmajor: "{{ dhis2versionfull|regex_replace('^(\\d+\\.\\d+).*$','\\1') }}"
     dhis2wardisturl: "https://releases.dhis2.org/{{ dhis2versionmajor }}/{{ dhis2versionfull }}/dhis.war"
     #dhis2wardistcksum: sha256:???
   tasks:

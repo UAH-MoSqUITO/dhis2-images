@@ -120,3 +120,25 @@ RemainAfterExit=true
 [Install]
 WantedBy=haproxy.service
 ```
+
+
+## Clean packer instance before saving as AMI
+
+https://gist.github.com/jdowning/5921369
+
+* Clean Apt
+* Remove SSH keys (authorized keys)
+* Cleanup log files
+* Cleanup bash history
+
+http://docs.amazonaws.cn/en_us/AWSEC2/latest/UserGuide/building-shared-amis.html
+
+* Update the AMI Tools Before Using Them
+* Disable Password-Based Remote Logins for Root
+* Disable Local Root Access
+* Remove SSH Host Key Pairs
+* Install Public Key Credentials ("Many distributions, including Amazon Linux and Ubuntu, use the `cloud-init` package to inject public key credentials for a configured user.")
+* Disabling sshd DNS Checks (Optional)
+
+[What should I include in an Amazon Machine Image (AMI)?](https://aws.amazon.com/answers/configuration-management/aws-ami-design/)
+![Fully-baked, Hyrbid, JeOS AMIs](https://d1.awsstatic.com/aws-answers/answers-images/ami-design-tradeoff.fc1a6d4fd21bd3ba1bf5b76477b28aa4d0de3a0d.png)

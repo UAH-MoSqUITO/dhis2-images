@@ -26,6 +26,7 @@
       "ssh_username": "ubuntu",
       "ami_name": "dhis2-full/{{user `dhis2_version`}}/{{isotime \"2006-01-02/15-04\"}}",
       "tags": {
+        "Name": "dhis2-full/{{user `dhis2_version`}}/{{isotime \"2006-01-02/15-04\"}}",
         "Base_AMI_Name": "{{ .SourceAMIName }}",
         "DHIS2_Version": "{{user `dhis2_version`}}"
       }
@@ -45,6 +46,12 @@
         "--skip-tags=skip",
         "--extra-vars",
         "ansible_python_interpreter=/usr/bin/python3 dhis2_version={{user `dhis2_version`}}"
+      ]
+    },
+    {
+      "type": "shell",
+      "inline": [
+        "sudo /usr/local/sbin/clean-for-ami"
       ]
     }
   ]

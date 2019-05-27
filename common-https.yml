@@ -45,3 +45,22 @@
           umask 077
           openssl req -x509 -newkey rsa:4096 -keyout "$key" -out "$cert" -days 365 -nodes -subj "/CN=$name"
           cat "$cert" "$key" > "$certkey"
+    - copy:
+        dest: /etc/systemd/system/make-ssl-cert-localhost.service
+        mode: 0644
+        content: |
+          [Unit]
+          Description=Create localhost certificate
+          After=network.target
+          Before=haproxy.service
+          ConditionPathExists=!/etc/ssl/private/ssl-cert-localhost.certkey
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/sbin/make-ssl-cert-localhost
+
+          [Install]
+          WantedBy=multi-user.target
+    - service:
+        name: make-ssl-cert-localhost
+        enabled: yes

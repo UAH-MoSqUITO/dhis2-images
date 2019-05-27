@@ -27,6 +27,7 @@
         remote_src: yes
         src: "{{ dhis2wardisturl }}"
         dest: /var/lib/tomcat8/webapps/ROOT
+        creates: /var/lib/tomcat8/webapps/ROOT/main.vm
 
 # TODO:
 # - register tomcat as service

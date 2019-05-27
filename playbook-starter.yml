@@ -1,4 +1,9 @@
 ---
+- hosts: starter
+  become: true
+  tasks:
+    - set_fact:
+        dhisuser: dhis
 - import_playbook: common.yml
 - hosts: starter
   become: true
@@ -9,41 +14,41 @@
           - tomcat8-user
     - user:
         state: present
-        name: "{{ dhis.user }}"
+        name: "{{ dhisuser }}"
         create_home: yes
     - file:
         state: directory
-        path: "/home/{{ dhis.user }}/config"
-        owner: "{{ dhis.user }}"
-        group: "{{ dhis.user }}"
+        path: "/home/{{ dhisuser }}/config"
+        owner: "{{ dhisuser }}"
+        group: "{{ dhisuser }}"
     - template:
-        owner: "{{ dhis.user }}"
-        group: "{{ dhis.user }}"
+        owner: "{{ dhisuser }}"
+        group: "{{ dhisuser }}"
         mode: 0600
-        dest: "/home/{{ dhis.user }}/config/dhis.conf"
+        dest: "/home/{{ dhisuser }}/config/dhis.conf"
         src: dhis.conf.j2
     - command:
       args:
-        creates: "/home/{{ dhis.user }}/tomcat-dhis/conf/server.xml"
+        creates: "/home/{{ dhisuser }}/tomcat-dhis/conf/server.xml"
         argv:
           - tomcat8-instance-create
-          - "/home/{{ dhis.user }}/tomcat-dhis"
+          - "/home/{{ dhisuser }}/tomcat-dhis"
     - file:
         state: directory
         recurse: yes
-        path: "/home/{{ dhis.user }}/tomcat-dhis"
-        owner: "{{ dhis.user }}"
-        group: "{{ dhis.user }}"
+        path: "/home/{{ dhisuser }}/tomcat-dhis"
+        owner: "{{ dhisuser }}"
+        group: "{{ dhisuser }}"
     - blockinfile:
         state: present
-        path: "/home/{{ dhis.user }}/tomcat-dhis/bin/setenv.sh"
+        path: "/home/{{ dhisuser }}/tomcat-dhis/bin/setenv.sh"
         insertafter: EOF
         block: |
           export JAVA_HOME='/usr/lib/jvm/java-8-openjdk-amd64/'
-          export DHIS2_HOME='/home/{{ dhis.user }}/config'
+          export DHIS2_HOME='/home/{{ dhisuser }}/config'
     - blockinfile:
         state: present
-        path: "/home/{{ dhis.user }}/tomcat-dhis/bin/startup.sh"
+        path: "/home/{{ dhisuser }}/tomcat-dhis/bin/startup.sh"
         insertafter: "^#!/"
         block: |
           set -e

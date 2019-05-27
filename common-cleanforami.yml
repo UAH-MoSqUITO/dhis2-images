@@ -1,0 +1,23 @@
+---
+- hosts: all
+  tags: ["cleanforami"]
+  become: true
+  tasks:
+    - copy:
+        dest: /usr/local/sbin/clean-for-ami
+        content: |
+          #!/bin/bash
+          set -eu
+          shopt -s nullglob
+          cd /
+          rm -f \
+            etc/ssh/*_key \
+            etc/ssh/*_key.pub \
+            etc/ssl/*/ssl-cert-snakeoil* \
+            home/ubuntu/.ssh/authorized_keys \
+            home/ubuntu/~* \
+            root/.ssh/authorized_keys \
+            #
+          # TODO truncate files under /var/log/
+          # TODO clean cache
+        mode: 0755

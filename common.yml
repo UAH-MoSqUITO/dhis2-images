@@ -1,29 +1,18 @@
 ---
-- import_playbook: common-packages.yml
 - hosts: all
   become: true
   tasks:
-    - set_fact:
-        dhis:
-          user: dhis
-          db:
-            name: dhis2
-            user: dhis
-            pass: "{{ lookup('password', 'credentials/dhis.db.pass') }}"
-            encryptpass: "{{ lookup('password', 'credentials/dhis.db.encryptpass') }}"
-    - block:
-        - postgresql_user:
-            state: present
-            name: "{{ dhis.db.user }}"
-            role_attr_flags: NOCREATEDB,NOCREATEROLE,LOGIN,NOSUPERUSER
-            encrypted: yes
-            password: "{{ dhis.db.pass }}"
-        - postgresql_db:
-            state: present
-            name: "{{ dhis.db.name }}"
-            owner: "{{ dhis.db.user }}"
-        - postgresql_ext:
-            state: present
-            db: "{{ dhis.db.name }}"
-            name: postgis
-      become_user: postgres
+    - name: Prevent APT from starting services when installing packages
+      copy:
+        dest: /usr/sbin/policy-rc.d
+        content: |
+          #!/bin/sh
+          exit 101
+        mode: 0755
+    - apt:
+        update_cache: yes
+        cache_valid_time: 86400
+- import_playbook: common-cleanforami.yml
+- import_playbook: common-packages.yml
+- import_playbook: common-https.yml
+- import_playbook: common-database.yml

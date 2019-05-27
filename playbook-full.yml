@@ -4,7 +4,9 @@
   tasks:
     - set_fact:
         dhis2versionfull: "{{ dhis2_version|default('2.32.0')}}"
+    - set_fact:
         dhis2versionmajor: "{{ dhis2versionfull|regex_replace('^(\\d+\\.\\d+).*$','\\1') }}"
+    - set_fact:
         dhis2wardisturl: "https://releases.dhis2.org/{{ dhis2versionmajor }}/{{ dhis2versionfull }}/dhis.war"
 - import_playbook: common.yml
 - hosts: all

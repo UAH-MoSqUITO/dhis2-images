@@ -14,6 +14,7 @@
             etc/ssh/*_key \
             etc/ssh/*_key.pub \
             etc/ssl/*/ssl-cert-snakeoil* \
+            home/ubuntu/.ansible \
             home/ubuntu/.ssh/authorized_keys \
             home/ubuntu/~* \
             root/.ssh/authorized_keys \

@@ -35,6 +35,11 @@
         mode: 0775
         owner: root
         group: tomcat8
+    - file:
+        state: directory
+        path: /etc/dhis/credentials
+        mode: 0700
+        owner: ubuntu
     - copy:
         src: playbook-credentials.yml
         dest: /etc/dhis/playbook-credentials.yml
@@ -54,13 +59,31 @@
 
           [Service]
           Type=oneshot
-          WorkingDirectory=/etc/dhis
-          ExecStart=/usr/bin/ansible-playbook playbook-credentials.yml
+          User=ubuntu
+          ExecStart=/usr/bin/ansible-playbook -i "localhost ansible_connection=local," /etc/dhis/playbook-credentials.yml
 
           [Install]
           WantedBy=multi-user.target
     - service:
         name: initialize-dhis-credentials
+        enabled: yes
+    - copy:
+        dest: /etc/systemd/system/make-ssl-cert-snakeoil.service
+        mode: 0644
+        content: |
+          [Unit]
+          After=network.target
+          Before=postgresql.service
+          ConditionPathExists=!/etc/ssl/certs/ssl-cert-snakeoil.pem
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/sbin/make-ssl-cert generate-default-snakeoil
+
+          [Install]
+          WantedBy=multi-user.target
+    - service:
+        name: make-ssl-cert-snakeoil
         enabled: yes
     - blockinfile:
         state: present

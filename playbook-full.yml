@@ -8,9 +8,9 @@
         dhis2versionmajor: "{{ dhis2versionfull|regex_replace('^(\\d+\\.\\d+).*$','\\1') }}"
     - set_fact:
         dhis2wardisturl: "https://releases.dhis2.org/{{ dhis2versionmajor }}/{{ dhis2versionfull }}/dhis.war"
-- hosts: all
-  become: true
-  tasks:
+    - set_fact:
+        dhisdbname: dhis2
+        dhisdbuser: dhis
     - name: Prevent APT from starting services when installing packages
       copy:
         dest: /usr/sbin/policy-rc.d
@@ -21,10 +21,6 @@
     - apt:
         update_cache: yes
         cache_valid_time: 86400
-- hosts: all
-  tags: ["cleanforami"]
-  become: true
-  tasks:
     - copy:
         dest: /usr/local/sbin/clean-for-ami
         content: |
@@ -121,9 +117,6 @@
   tags: ["database"]
   become: true
   tasks:
-    - set_fact:
-        dhisdbname: dhis2
-        dhisdbuser: dhis
     - package:
         state: present
         name:

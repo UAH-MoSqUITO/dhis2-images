@@ -40,6 +40,11 @@
           # TODO truncate files under /var/log/
           # TODO clean cache
         mode: 0755
+    - file:
+    # The ROOT webapp directory must exist before tomcat8 gets installed
+    # or else the postinst script will put default files there.
+        state: directory
+        path: /var/lib/tomcat8/webapps/ROOT
     - package:
         state: present
         name:
@@ -138,11 +143,6 @@
             db: "{{ dhisdbname }}"
             name: postgis
       become_user: postgres
-    - file:
-    # The ROOT webapp directory must exist before tomcat8 gets installed
-    # or else the postinst script will put default files there.
-        state: directory
-        path: /var/lib/tomcat8/webapps/ROOT
     - unarchive:
     # The unarchive module uses unzip for war files
         remote_src: yes

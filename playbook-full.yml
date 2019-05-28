@@ -98,7 +98,7 @@
           [Unit]
           Description=Create localhost certificate
           After=network.target
-          Before=haproxy.service,postgresql@10-main.service
+          Before=haproxy.service postgresql@10-main.service
           ConditionPathExists=!/etc/ssl/private/ssl-cert-localhost.certkey
 
           [Service]

@@ -116,9 +116,8 @@
         content: |
           # Avoid "out of shared memory" error for DHIS2
           max_locks_per_transaction = 1024
-          # Use localhost certificate
-          ssl_cert_file = /etc/ssl/certs/ssl-cert-localhost.pem
-          ssl_key_file = /etc/ssl/private/ssl-cert-localhost.key
+          # Do not use ssl, since certificate reset is confusing
+          ssl = off
     - service:
         name: postgresql
         state: started
@@ -139,13 +138,13 @@
             db: "{{ dhisdbname }}"
             name: postgis
       become_user: postgres
+    - file:
     # The ROOT webapp directory must exist before tomcat8 gets installed
     # or else the postinst script will put default files there.
-    - file:
         state: directory
         path: /var/lib/tomcat8/webapps/ROOT
-    # The unarchive module uses unzip for war files
     - unarchive:
+    # The unarchive module uses unzip for war files
         remote_src: yes
         src: "{{ dhis2wardisturl }}"
         dest: /var/lib/tomcat8/webapps/ROOT

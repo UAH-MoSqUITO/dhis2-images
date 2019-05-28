@@ -40,22 +40,19 @@
           # TODO truncate files under /var/log/
           # TODO clean cache
         mode: 0755
-- hosts: all
-  tags: ["packages"]
-  become: true
-  tasks:
     - package:
         state: present
         name:
-          - openjdk-8-jdk
-- hosts: all
-  tags: ["https"]
-  become: true
-  tasks:
-    - package:
-        state: present
-        name:
+          - ansible
           - haproxy
+          - openjdk-8-jdk
+          - postgresql-10
+          - postgresql-10-postgis-2.4
+          - postgresql-contrib-10
+          - python-psycopg2
+          - python3-psycopg2
+          - tomcat8
+          - unzip
     - copy:
         dest: /etc/default/haproxy
         mode: 0644
@@ -113,18 +110,6 @@
     - service:
         name: make-ssl-cert-localhost
         enabled: yes
-- hosts: all
-  tags: ["database"]
-  become: true
-  tasks:
-    - package:
-        state: present
-        name:
-          - postgresql-10
-          - postgresql-contrib-10
-          - postgresql-10-postgis-2.4
-          - python-psycopg2
-          - python3-psycopg2
     - copy:
         dest: /etc/postgresql/10/main/conf.d/dhis2.conf
         mode: 0644
@@ -151,20 +136,11 @@
             db: "{{ dhisdbname }}"
             name: postgis
       become_user: postgres
-- hosts: all
-  become: yes
-  tasks:
     # The ROOT webapp directory must exist before tomcat8 gets installed
     # or else the postinst script will put default files there.
     - file:
         state: directory
         path: /var/lib/tomcat8/webapps/ROOT
-    - package:
-        state: present
-        name:
-          - ansible
-          - tomcat8
-          - unzip
     # The unarchive module uses unzip for war files
     - unarchive:
         remote_src: yes

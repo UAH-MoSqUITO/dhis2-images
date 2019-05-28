@@ -27,14 +27,14 @@
           #!/bin/bash
           set -eu
           shopt -s nullglob
-          cd /
+          cd "$(dirname "$BASH_SOURCE")/../../.."
           rm -rf \
             etc/ssh/*_key \
             etc/ssh/*_key.pub \
             etc/ssl/*/ssl-cert-snakeoil* \
-            home/{{ ansible_user_id }}/.ansible \
+            home/ubuntu/.ansible \
             home/ubuntu/.ssh/authorized_keys \
-            home/{{ ansible_user_id }}/~* \
+            home/ubuntu/~* \
             root/.ssh/authorized_keys \
             #
           # TODO truncate files under /var/log/

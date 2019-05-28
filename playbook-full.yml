@@ -32,9 +32,9 @@
             etc/ssh/*_key \
             etc/ssh/*_key.pub \
             etc/ssl/*/ssl-cert-snakeoil* \
-            home/ubuntu/.ansible \
+            home/{{ ansible_user_id }}/.ansible \
             home/ubuntu/.ssh/authorized_keys \
-            home/ubuntu/~* \
+            home/{{ ansible_user_id }}/~* \
             root/.ssh/authorized_keys \
             #
           # TODO truncate files under /var/log/
@@ -159,7 +159,7 @@
         state: directory
         path: /etc/dhis/credentials
         mode: 0700
-        owner: ubuntu
+        owner: "{{ ansible_user_id }}"
     - copy:
         src: playbook-credentials.yml
         dest: /etc/dhis/playbook-credentials.yml
@@ -179,7 +179,7 @@
 
           [Service]
           Type=oneshot
-          User=ubuntu
+          User={{ ansible_user_id }}
           ExecStart=/usr/bin/ansible-playbook -i "localhost ansible_connection=local," /etc/dhis/playbook-credentials.yml
 
           [Install]
@@ -192,9 +192,11 @@
         path: /etc/default/tomcat8
         insertafter: EOF
         block: |
+          # Java 9+ cause problems for JAXB modules
+          JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
           # Location of DHIS2 configuration
-          DHIS2_HOME='/etc/dhis'
+          DHIS2_HOME=/etc/dhis
 
 # TODO:
 # - register tomcat as service

@@ -8,6 +8,10 @@ Vagrant.configure("2") do |config|
     'full',
   ].each do |name|
     config.vm.define name do |x|
+      x.vm.provider "virtualbox" do |v|
+        v.memory = 2048
+        v.cpus = 2
+      end
       x.vm.provision "ansible_local" do |ansible|
         ansible.compatibility_mode = "2.0"
         ansible.become = false

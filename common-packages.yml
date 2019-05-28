@@ -1,9 +1,1 @@
 ---
-- hosts: all
-  tags: ["packages"]
-  become: true
-  tasks:
-    - package:
-        state: present
-        name:
-          - openjdk-8-jdk

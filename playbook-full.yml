@@ -20,6 +20,7 @@
     - package:
         state: present
         name:
+          - ansible
           - tomcat8
           - unzip
     # The unarchive module uses unzip for war files
@@ -28,6 +29,47 @@
         src: "{{ dhis2wardisturl }}"
         dest: /var/lib/tomcat8/webapps/ROOT
         creates: /var/lib/tomcat8/webapps/ROOT/main.vm
+    - file:
+        state: directory
+        path: /etc/dhis
+        mode: 0775
+        owner: root
+        group: tomcat8
+    - copy:
+        src: playbook-credentials.yml
+        dest: /etc/dhis/playbook-credentials.yml
+        mode: 0644
+    - copy:
+        src: templates/dhis.conf.j2
+        dest: /etc/dhis/dhis.conf.j2
+        mode: 0644
+    - copy:
+        dest: /etc/systemd/system/initialize-dhis-credentials.service
+        mode: 0644
+        content: |
+          [Unit]
+          After=postgresql.service
+          Before=tomcat8.service
+          ConditionPathExists=!/etc/dhis/dhis.conf
+
+          [Service]
+          Type=oneshot
+          WorkingDirectory=/etc/dhis
+          ExecStart=/usr/bin/ansible-playbook playbook-credentials.yml
+
+          [Install]
+          WantedBy=multi-user.target
+    - service:
+        name: initialize-dhis-credentials
+        enabled: yes
+    - blockinfile:
+        state: present
+        path: /etc/default/tomcat8
+        insertafter: EOF
+        block: |
+
+          # Location of DHIS2 configuration
+          DHIS2_HOME='/etc/dhis'
 
 # TODO:
 # - register tomcat as service

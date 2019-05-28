@@ -11,10 +11,10 @@ connection.url = jdbc:postgresql:{{ dhisdbname }}
 connection.username = {{ dhisdbuser }}
 
 # Database password
-connection.password = PLACEHOLDER
+connection.password = {{ dhisdbpass }}
 
 # Database schema behavior, can be validate, update, create, create-drop
 connection.schema = update
 
 # Encryption password (sensitive)
-encryption.password = PLACEHOLDER
+encryption.password = {{ dhisdbencryptpass }}

@@ -98,7 +98,7 @@
           [Unit]
           Description=Create localhost certificate
           After=network.target
-          Before=haproxy.service
+          Before=haproxy.service,postgresql@10-main.service
           ConditionPathExists=!/etc/ssl/private/ssl-cert-localhost.certkey
 
           [Service]
@@ -116,6 +116,9 @@
         content: |
           # Avoid "out of shared memory" error for DHIS2
           max_locks_per_transaction = 1024
+          # Use localhost certificate
+          ssl_cert_file = /etc/ssl/certs/ssl-cert-localhost.pem
+          ssl_key_file = /etc/ssl/private/ssl-cert-localhost.key
     - service:
         name: postgresql
         state: started
@@ -184,24 +187,6 @@
           WantedBy=multi-user.target
     - service:
         name: initialize-dhis-credentials
-        enabled: yes
-    - copy:
-        dest: /etc/systemd/system/make-ssl-cert-snakeoil.service
-        mode: 0644
-        content: |
-          [Unit]
-          After=network.target
-          Before=postgresql.service
-          ConditionPathExists=!/etc/ssl/certs/ssl-cert-snakeoil.pem
-
-          [Service]
-          Type=oneshot
-          ExecStart=/usr/sbin/make-ssl-cert generate-default-snakeoil
-
-          [Install]
-          WantedBy=multi-user.target
-    - service:
-        name: make-ssl-cert-snakeoil
         enabled: yes
     - blockinfile:
         state: present

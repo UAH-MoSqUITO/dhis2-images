@@ -8,6 +8,7 @@
         dhis2versionmajor: "{{ dhis2versionfull|regex_replace('^(\\d+\\.\\d+).*$','\\1') }}"
     - set_fact:
         dhis2wardisturl: "https://releases.dhis2.org/{{ dhis2versionmajor }}/{{ dhis2versionfull }}/dhis.war"
+        dhis2datadisturl: "https://s3-eu-west-1.amazonaws.com/databases.dhis2.org/sierra-leone/{{ dhis2versionmajor }}/dhis2-db-sierra-leone.sql.gz"
     - set_fact:
         dhisdbname: dhis2
         dhisdbuser: dhis
@@ -138,11 +139,14 @@
             state: present
             name: "{{ dhisdbname }}"
             owner: "{{ dhisdbuser }}"
-        - postgresql_ext:
-            state: present
-            db: "{{ dhisdbname }}"
-            name: postgis
       become_user: postgres
+    - shell: >
+        curl -s '{{ dhis2datadisturl }}' | zcat |
+        sudo -i -u postgres psql -v ON_ERROR_STOP=1 -d {{ dhisdbname }}
+        2>&1 > $HOME/import-sierra-leone.$(date +%s-%F).log
+      args:
+        warn: no
+      become: no
     - unarchive:
     # The unarchive module uses unzip for war files
         remote_src: yes

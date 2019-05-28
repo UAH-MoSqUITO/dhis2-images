@@ -10,7 +10,7 @@
           set -eu
           shopt -s nullglob
           cd /
-          rm -f \
+          rm -rf \
             etc/ssh/*_key \
             etc/ssh/*_key.pub \
             etc/ssl/*/ssl-cert-snakeoil* \
